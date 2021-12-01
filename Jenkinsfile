@@ -21,9 +21,9 @@ pipeline {
             steps {
                 echo 'Clonning Repository'
 
-                git url: 'https://github.com/frontalnh/temp.git',
-                    branch: 'master',
-                    credentialsId: 'jenkinsgit'
+                git url: 'https://github.com/MinhwaBae/cicd_test.git', //git hub
+                    branch: 'main',
+                    credentialsId: 'jenkins' //jenkins에 등록한 credentialsId
             }
 
             post {
@@ -48,9 +48,9 @@ pipeline {
           steps {
             echo 'Deploying Frontend'
             // 프론트엔드 디렉토리의 정적파일들을 S3 에 올림, 이 전에 반드시 EC2 instance profile 을 등록해야함.
-            dir ('./website'){
+            dir ('./website'){ //website의 index.html을 S3로 올리는 것
                 sh '''
-                aws s3 sync ./ s3://namhoontest
+                aws s3 sync ./ s3://mhjenkinstest
                 '''
             }
           }
@@ -60,8 +60,8 @@ pipeline {
               // failed, record the test results and archive the jar file.
               success {
                   echo 'Successfully Cloned Repository'
-
-                  mail  to: 'frontalnh@gmail.com',
+            //메일보내기
+                  mail  to: 'minhwab19@gmail.com',
                         subject: "Deploy Frontend Success",
                         body: "Successfully deployed frontend!"
 
@@ -70,7 +70,7 @@ pipeline {
               failure {
                   echo 'I failed :('
 
-                  mail  to: 'frontalnh@gmail.com',
+                  mail  to: 'minhwab19@gmail.com',
                         subject: "Failed Pipelinee",
                         body: "Something is wrong with deploy frontend"
               }
@@ -125,7 +125,7 @@ pipeline {
             }
           }
 
-          post {
+          post { //빌드하다 실패하면 멈추고 에러 로그 남김
             failure {
               error 'This pipeline stops here...'
             }
@@ -137,10 +137,9 @@ pipeline {
 
           steps {
             echo 'Build Backend'
-
+                //docker rm -f $(docker ps -aq)
             dir ('./server'){
                 sh '''
-                docker rm -f $(docker ps -aq)
                 docker run -p 80:80 -d server
                 '''
             }
@@ -148,7 +147,7 @@ pipeline {
 
           post {
             success {
-              mail  to: 'frontalnh@gmail.com',
+              mail  to: 'minhwab19@gmail.com',
                     subject: "Deploy Success",
                     body: "Successfully deployed!"
                   
