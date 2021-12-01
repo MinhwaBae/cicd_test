@@ -22,7 +22,7 @@ pipeline {
                 echo 'Clonning Repository'
 
                 git url: 'https://github.com/MinhwaBae/cicd_test.git', //git hub
-                    branch: 'main',
+                    branch: 'master',
                     credentialsId: 'jenkins' //jenkins에 등록한 credentialsId
             }
 
